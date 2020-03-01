@@ -5,7 +5,7 @@
 # Before running this script, you need to install docker first.
 #
 
-EMSCRIPTEN_VERSION=sdk-tag-1.37.29-64bit
+EMSCRIPTEN_VERSION=1.39.0
 TARGET=${1:-build}
 
 check_command() {

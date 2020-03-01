@@ -7,3 +7,9 @@ The original ffmpeg.js project provides FFmpeg builds ported to JavaScript using
 ## FFMPEG
 Version: 2.8
 Need 2 patch to work with emscripten
+
+
+# --pre-js javascript/prepend.js \
+# --closure 1 \
+# -s USE_SDL=2 \
+# -s WASM={0,1} -s SINGLE_FILE=1 merges JavaScript and WebAssembly code in the single output file

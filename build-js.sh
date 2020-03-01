@@ -54,11 +54,6 @@ make_ffmpeg() {
   cp ffmpeg ffmpeg.bc
 }
 
-# --pre-js javascript/prepend.js \
-# --closure 1 \
-# -s USE_SDL=2 \
-# -s WASM={0,1} -s SINGLE_FILE=1 merges JavaScript and WebAssembly code in the single output file
-
 build_ffmpegjs() {
   cd $ROOT_DIR
   emcc $BUILD_DIR/FFmpeg/ffmpeg.bc \
@@ -66,10 +61,9 @@ build_ffmpegjs() {
     -s MODULARIZE=0 \
     -s WASM=0 \
     -O3 --memory-init-file 0 \
-    -s NO_FILESYSTEM=1 \
     -s NO_EXIT_RUNTIME=1 \
     -s EXPORTED_FUNCTIONS='["_avcodec_register_all","_avcodec_find_decoder_by_name","_avcodec_alloc_context3","_avcodec_open2", "_av_init_packet", "_av_frame_alloc", "_av_packet_from_data", "_avcodec_decode_video2", "_avcodec_flush_buffers"]' \
-    -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "getValue", "setValue", "writeArrayToMemory"]' \
+    -s EXTRA_EXPORTED_RUNTIME_METHODS='["FS", "ccall", "getValue", "setValue", "writeArrayToMemory"]' \
     -s TOTAL_MEMORY=67108864
 }
 
@@ -80,3 +74,5 @@ main() {
 }
 
 main "$@"
+
+
