@@ -9,6 +9,11 @@ configure_ffmpeg() {
   make clean
   emconfigure ./configure \
     --cc=emcc \
+    --nm="llvm-nm -g" \
+    --ar=emar \
+    --cxx=em++ \
+    --objcc=emcc \
+    --dep-cc=emcc \
 	--enable-cross-compile \
 	--target-os=none \
 	--arch=x86 \
@@ -56,11 +61,19 @@ make_ffmpeg() {
 
 build_ffmpegjs() {
   cd $ROOT_DIR
+  rm dist/ffmpeg-h264.js
   emcc $BUILD_DIR/FFmpeg/ffmpeg.bc \
     -o dist/ffmpeg-h264.js \
-    -s MODULARIZE=0 \
-    -s WASM=0 \
-    -O3 --memory-init-file 0 \
+    -Oz \
+    -O3 \
+    -s MODULARIZE=1 \
+    --closure 1 \
+    --js-opts 1 \
+    --llvm-opts 3 \
+    --llvm-lto 3 \
+    -g0 \
+    --memory-init-file 0 \
+    -s SINGLE_FILE=1 \
     -s NO_EXIT_RUNTIME=1 \
     -s EXPORTED_FUNCTIONS='["_avcodec_register_all","_avcodec_find_decoder_by_name","_avcodec_alloc_context3","_avcodec_open2", "_av_init_packet", "_av_frame_alloc", "_av_packet_from_data", "_avcodec_decode_video2", "_avcodec_flush_buffers"]' \
     -s EXTRA_EXPORTED_RUNTIME_METHODS='["FS", "ccall", "getValue", "setValue", "writeArrayToMemory"]' \
