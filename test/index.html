@@ -28,7 +28,7 @@
         ws.onmessage = function (event) {
             var timeStamp = new DataView(event.data).getFloat64(0, false); // read double time stamp as big endian
             var dataSize = new DataView(event.data).getInt32(8, false);
-
+            
             // update div content to display frame info
             timeStampDiv.innerHTML = "TimeStamp: " + new Date(timeStamp * 1000).toISOString();
             pktSizeDiv.innerHTML = "NAL Unit Size: " + dataSize;
@@ -47,37 +47,55 @@
             };
 
             worker.postMessage(transferableData);
-            worker.onmessage = function (e) {
-                var decodedFrame = e.data;
+        }
 
-                yuvCanvas.canvasElement.drawing = true;
-                yuvCanvas.drawNextOuptutPictureGL({
-                    yData: decodedFrame.frameYData,
-                    yDataPerRow: decodedFrame.frame_width,
-                    yRowCnt: decodedFrame.frame_height,
-                    uData: decodedFrame.frameUData,
-                    uDataPerRow: decodedFrame.frame_width / 2,
-                    uRowCnt: decodedFrame.frame_height / 2,
-                    vData: decodedFrame.frameVData,
-                    vDataPerRow: decodedFrame.frame_width / 2,
-                    vRowCnt: decodedFrame.frame_height / 2
-                });
-                yuvCanvas.canvasElement.drawing = false;
+        let buffer = [];
+        worker.onmessage = function (e) {
+            buffer.push(e);
+        }
+
+        setInterval(function() {
+            if (buffer.length > 30) {
+                buffer = [];
             }
+
+            if (buffer.length > 10) {
+                console.log("buffer size="+buffer.length);
+                display(buffer.shift());
+            }
+        }, 1000/30.);
+
+        function display(e) {
+        
+            var decodedFrame = e.data;
+
+            yuvCanvas.canvasElement.drawing = true;
+            yuvCanvas.drawNextOuptutPictureGL({
+                yData: decodedFrame.frameYData,
+                yDataPerRow: decodedFrame.frame_width,
+                yRowCnt: decodedFrame.frame_height,
+                uData: decodedFrame.frameUData,
+                uDataPerRow: decodedFrame.frame_width / 2,
+                uRowCnt: decodedFrame.frame_height / 2,
+                vData: decodedFrame.frameVData,
+                vDataPerRow: decodedFrame.frame_width / 2,
+                vRowCnt: decodedFrame.frame_height / 2
+            });
+
+            yuvCanvas.canvasElement.drawing = false;
         }
     }
 </script>
 
 Video Source: <select id="url" size="1">
-    <option value="ws://localhost:8282/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=foscam&observedProperty=http://sensorml.com/ont/swe/property/VideoFrame&temporalFilter=phenomenonTime,now/2055-08-11T20:18:05.451Z">
-        Foscam
-    </option>
+    <option value="ws://localhost:8282/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=foscam&observedProperty=http://sensorml.com/ont/swe/property/VideoFrame&temporalFilter=phenomenonTime,now/2055-08-11T20:18:05.451Z">Foscam</option>
+    <option value="ws://34.66.201.87:8282/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:osh:sensor:rtpcam:tvs-rop-1-sos&observedProperty=http://sensorml.com/ont/swe/property/VideoFrame&temporalFilter=phenomenonTime,now/2080-01-01">Sofwerx</option>
 </select>
 <button type="button" onclick='startDecode()'>Play</button>
 <div id="pktSize">Packet Size:</div>
 <div id="timeStamp">TimeStamp:</div>
 <div style="width: 640px; height: 360px; overflow: auto; resize: both; border:1px solid black;">
-    <canvas id="canvas" width="1280" height="720" style="width: 100%; height: calc(100%-0px);"/>
+    <canvas id="canvas" width="1920" height="1080" style="width: 100%; height: calc(100%-0px);"/>
 </div>
 </body>
 </html>
