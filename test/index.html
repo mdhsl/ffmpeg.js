@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="YUVCanvas.js"></script>
+</head>
+<body>
+<script>
+    var ws = null;
+
+    function startDecode() {
+
+        // get info divs
+        var timeStampDiv = document.getElementById("timeStamp");
+        var pktSizeDiv = document.getElementById("pktSize");
+        var canvas = document.getElementById("canvas");
+        //var canvas_ctx = canvas.getContext('2d');
+        var yuvCanvas = new YUVCanvas({canvas: canvas, width: canvas.width, height: canvas.height});
+
+        // connect to WS H264 stream
+        var url = document.getElementById('url').value;
+        if (ws != null)
+            ws.close();
+        ws = new WebSocket(url);
+        ws.binaryType = 'arraybuffer';
+
+        // on receiving data. The buffer has to be a COMPLETE NAL UNIT, otherwise the buffer could not be decoded
+        let worker = new Worker('./worker.js');
+        ws.onmessage = function (event) {
+            var timeStamp = new DataView(event.data).getFloat64(0, false); // read double time stamp as big endian
+            var dataSize = new DataView(event.data).getInt32(8, false);
+
+            // update div content to display frame info
+            timeStampDiv.innerHTML = "TimeStamp: " + new Date(timeStamp * 1000).toISOString();
+            pktSizeDiv.innerHTML = "NAL Unit Size: " + dataSize;
+
+            // get actual NAL unit data
+            var len = event.data.byteLength;
+            var buffer = new Uint8Array(event.data, 12, len - 12) // H264 NAL unit starts at offset 12 after 8-bytes time stamp and 4-bytes frame length
+
+            var pktData = buffer ;
+            var pktSize = pktData.length;
+
+            var transferableData = {
+                pktSize: pktSize,
+                pktData: pktData,
+                byteOffset: pktData.byteOffset
+            };
+
+            worker.postMessage(transferableData);
+            worker.onmessage = function (e) {
+                var decodedFrame = e.data;
+
+                yuvCanvas.canvasElement.drawing = true;
+                yuvCanvas.drawNextOuptutPictureGL({
+                    yData: decodedFrame.frameYData,
+                    yDataPerRow: decodedFrame.frame_width,
+                    yRowCnt: decodedFrame.frame_height,
+                    uData: decodedFrame.frameUData,
+                    uDataPerRow: decodedFrame.frame_width / 2,
+                    uRowCnt: decodedFrame.frame_height / 2,
+                    vData: decodedFrame.frameVData,
+                    vDataPerRow: decodedFrame.frame_width / 2,
+                    vRowCnt: decodedFrame.frame_height / 2
+                });
+                yuvCanvas.canvasElement.drawing = false;
+            }
+        }
+    }
+</script>
+
+Video Source: <select id="url" size="1">
+    <option value="ws://localhost:8282/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=foscam&observedProperty=http://sensorml.com/ont/swe/property/VideoFrame&temporalFilter=phenomenonTime,now/2055-08-11T20:18:05.451Z">
+        Foscam
+    </option>
+</select>
+<button type="button" onclick='startDecode()'>Play</button>
+<div id="pktSize">Packet Size:</div>
+<div id="timeStamp">TimeStamp:</div>
+<div style="width: 640px; height: 360px; overflow: auto; resize: both; border:1px solid black;">
+    <canvas id="canvas" width="1280" height="720" style="width: 100%; height: calc(100%-0px);"/>
+</div>
+</body>
+</html>

@@ -62,18 +62,15 @@ build_ffmpegjs() {
   echo "Emscriting ffmpeg into js"
   emcc build/FFmpeg/ffmpeg.bc \
     -o dist/ffmpeg-h264.js \
-    -O3 \
     -s MODULARIZE=1 \
     --memory-init-file 0 \
     -s WASM=1 \
-    --closure 1 \
-    --js-opts 1 \
-    --llvm-opts 3 \
-    --llvm-lto 3 \
-    -g0 \
+    -g4 \
+    --js-opts 0 \
+    -s ASSERTIONS=2 \
+    -s SAFE_HEAP=1 \
     -s SINGLE_FILE=1 \
     -s NO_EXIT_RUNTIME=1 \
-    -s 'EXPORT_NAME="OSH"' \
     -s EXPORTED_FUNCTIONS='["_avcodec_register_all","_avcodec_find_decoder_by_name","_avcodec_alloc_context3","_avcodec_open2", "_av_init_packet", "_av_frame_alloc", "_av_packet_from_data", "_avcodec_decode_video2", "_avcodec_flush_buffers"]' \
     -s EXTRA_EXPORTED_RUNTIME_METHODS='["FS", "ccall", "getValue", "setValue", "writeArrayToMemory"]' \
     -s TOTAL_MEMORY=134217728

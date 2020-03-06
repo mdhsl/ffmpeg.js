@@ -9,7 +9,20 @@ Version: 2.8
 Need 2 patch to work with emscripten
 
 
-# --pre-js javascript/prepend.js \
-# --closure 1 \
-# -s USE_SDL=2 \
-# -s WASM={0,1} -s SINGLE_FILE=1 merges JavaScript and WebAssembly code in the single output file
+## Build
+
+You can build using docker image:
+
+```bash
+$ ./build-with-docker.sh
+```
+
+This will build dist files into dist directory
+
+## Test
+
+You can test using python simple server from the root directory:
+
+```bash
+$ python -m http.server 8000 
+```
