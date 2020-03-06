@@ -11,6 +11,8 @@ Need 2 patch to work with emscripten
 
 ## Build
 
+The compilation options are contained into build-js.sh file
+
 You can build using docker image:
 
 ```bash
