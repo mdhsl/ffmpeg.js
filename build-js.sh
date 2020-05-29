@@ -40,6 +40,8 @@ configure_ffmpeg() {
     --disable-vaapi \
     --disable-vdpau \
     --enable-decoder=h264 \
+    --enable-decoder=vp9 \
+    --enable-decoder=vp8 \
     --enable-decoder=hevc \
     --enable-protocol=file \
     --disable-bzlib \
@@ -66,11 +68,10 @@ build_ffmpegjs() {
     -s MODULARIZE=1 \
     --memory-init-file 0 \
     -s WASM=1 \
-    --closure 1 \
-    --js-opts 1 \
     --llvm-opts 3 \
     --llvm-lto 3 \
     -g0 \
+    --closure 1 \
     -s SINGLE_FILE=1 \
     -s NO_EXIT_RUNTIME=1 \
     -s 'EXPORT_NAME="OSH"' \
