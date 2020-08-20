@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="test/YUVCanvas.js"></script>
+    <script src="YUVCanvas.js"></script>
 </head>
 <body>
 <script>
@@ -24,7 +24,7 @@
         ws.binaryType = 'arraybuffer';
 
         // on receiving data. The buffer has to be a COMPLETE NAL UNIT, otherwise the buffer could not be decoded
-        let worker = new Worker('./test/worker.js');
+        let worker = new Worker('./worker.js');
         ws.onmessage = function (event) {
             var timeStamp = new DataView(event.data).getFloat64(0, false); // read double time stamp as big endian
             var dataSize = new DataView(event.data).getInt32(8, false);

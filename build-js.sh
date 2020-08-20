@@ -64,7 +64,11 @@ build_ffmpegjs() {
   cd $ROOT_DIR
   echo "Emscripting ffmpeg into js"
   echo `ls -lh build/FFmpeg/ffmpeg.bc`
-  emcc build/FFmpeg/ffmpeg.bc \
+  emcc  build/FFmpeg/libavutil/libavutil.a \
+    build/FFmpeg/libswscale/libswscale.a \
+    build/FFmpeg/libavcodec/libavcodec.a \
+    build/FFmpeg/libavfilter/libavfilter.a \
+    build/FFmpeg/libavformat/libavformat.a \
     -o dist/ffmpeg-h264.js \
     -O3 \
     -s MODULARIZE=1 \
@@ -89,5 +93,4 @@ main() {
 }
 
 main "$@"
-
 

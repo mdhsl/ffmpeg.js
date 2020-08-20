@@ -9,14 +9,17 @@ configure_ffmpeg() {
   make clean
   echo "Preparing configure"
   emconfigure ./configure \
-      --cc=emcc \
     --nm="llvm-nm -g" \
-    --ar=emar \
     --cxx=em++ \
+    --ar=emar \
+    --as=llvm-as \
+    --ranlib=llvm-ranlib \
+    --cc=emcc \
+    --objcc=emcc \
     --dep-cc=emcc \
     --enable-cross-compile \
     --target-os=none \
-    --arch=x86 \
+    --arch=i686 \
     --disable-runtime-cpudetect \
     --disable-asm \
     --disable-fast-unaligned \
@@ -40,6 +43,8 @@ configure_ffmpeg() {
     --disable-vaapi \
     --disable-vdpau \
     --enable-decoder=h264 \
+    --enable-decoder=vp9 \
+    --enable-decoder=vp8 \
     --enable-decoder=hevc \
     --enable-protocol=file \
     --disable-bzlib \

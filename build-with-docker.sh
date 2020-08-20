@@ -5,7 +5,7 @@
 # Before running this script, you need to install docker first.
 #
 
-EMSCRIPTEN_VERSION=1.39.10-upstream
+EMSCRIPTEN_VERSION=latest
 TARGET=${1:-build}
 
 check_command() {
