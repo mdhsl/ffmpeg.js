@@ -4,14 +4,15 @@ ROOT_DIR=$PWD
 
 ##
 configure_ffmpeg() {
+  rm -fr build/FFmpeg
+  git clone --recursive https://github.com/FFmpeg/FFmpeg.git build/FFmpeg
   cd build/FFmpeg
-  echo "Make clean"
-  make clean
   echo "Preparing configure"
   emconfigure ./configure \
-      --cc=emcc \
+    --cc=emcc \
     --nm="llvm-nm -g" \
     --ar=emar \
+    --ranlib="emranlib" \
     --cxx=em++ \
     --dep-cc=emcc \
     --enable-cross-compile \
@@ -61,7 +62,8 @@ make_ffmpeg() {
 
 build_ffmpegjs() {
   cd $ROOT_DIR
-  echo "Emscriting ffmpeg into js"
+  echo "Emscripting ffmpeg into js"
+  echo `ls -lh build/FFmpeg/ffmpeg.bc`
   emcc build/FFmpeg/ffmpeg.bc \
     -o dist/ffmpeg-h264.js \
     -O3 \
