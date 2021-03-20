@@ -1,13 +1,14 @@
 #!/bin/bash -x
 
 ROOT_DIR=$PWD
-
+HASH=9f8c81ef
 ##
 configure_ffmpeg() {
   rm -fr build/FFmpeg
   git clone --recursive https://github.com/FFmpeg/FFmpeg.git build/FFmpeg
   cd build/FFmpeg
-  echo "Preparing configure"
+  git checkout $HASH
+  echo "Preparing configure for "$HASH
   emconfigure ./configure \
     --cc=emcc \
     --nm="llvm-nm -g" \
@@ -44,6 +45,14 @@ configure_ffmpeg() {
     --enable-decoder=vp9 \
     --enable-decoder=vp8 \
     --enable-decoder=hevc \
+    --enable-decoder=mp3 \
+    --enable-decoder=mp3float  \
+    --enable-decoder=pcm_s8 \
+    --enable-decoder=pcm_s8_planar \
+    --enable-decoder=pcm_u8 \
+    --enable-decoder=pcm_s16le \
+    --enable-decoder=vorbis \
+    --enable-decoder=aac \
     --enable-protocol=file \
     --disable-bzlib \
     --disable-iconv \
