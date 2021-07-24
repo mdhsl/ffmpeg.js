@@ -1,7 +1,8 @@
 #!/bin/bash -x
 
 ROOT_DIR=$PWD
-HASH=9f8c81ef
+#HASH=9f8c81ef
+HASH=n4.4
 ##
 configure_ffmpeg() {
   rm -fr build/FFmpeg
@@ -73,7 +74,8 @@ build_ffmpegjs() {
   cd $ROOT_DIR
   echo "Emscripting ffmpeg into js"
   echo `ls -lh build/FFmpeg/ffmpeg.bc`
-  emcc  build/FFmpeg/libavutil/libavutil.a \
+  emcc --bind \
+    build/FFmpeg/libavutil/libavutil.a \
     build/FFmpeg/libswscale/libswscale.a \
     build/FFmpeg/libavcodec/libavcodec.a \
     build/FFmpeg/libavfilter/libavfilter.a \
@@ -90,8 +92,8 @@ build_ffmpegjs() {
     -s SINGLE_FILE=1 \
     -s NO_EXIT_RUNTIME=1 \
     -s 'EXPORT_NAME="OSH"' \
-    -s EXPORTED_FUNCTIONS='["_avcodec_register_all","_avcodec_find_decoder_by_name","_avcodec_alloc_context3","_avcodec_open2", "_av_init_packet", "_av_frame_alloc", "_av_packet_from_data", "_avcodec_decode_video2", "_avcodec_flush_buffers"]' \
-    -s EXTRA_EXPORTED_RUNTIME_METHODS='["FS", "ccall", "getValue", "setValue", "writeArrayToMemory"]' \
+    -s EXPORTED_FUNCTIONS='["_av_get_default_channel_layout","_avcodec_register_all","_avcodec_find_decoder_by_name","_avcodec_alloc_context3","_avcodec_open2", "_av_init_packet", "_av_frame_alloc", "_av_packet_from_data", "_avcodec_decode_video2", "_avcodec_flush_buffers","_avcodec_decode_audio4"]' \
+    -s EXPORTED_RUNTIME_METHODS='["FS", "ccall", "getValue", "setValue", "writeArrayToMemory"]' \
     -s TOTAL_MEMORY=134217728
 }
 

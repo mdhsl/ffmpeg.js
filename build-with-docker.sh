@@ -5,6 +5,7 @@
 # Before running this script, you need to install docker first.
 #
 
+#LAST: 2.0.26
 EMSCRIPTEN_VERSION=latest
 TARGET=${1:-build}
 
@@ -14,6 +15,7 @@ check_command() {
 }
 
 build() {
+  docker pull emscripten/emsdk:${EMSCRIPTEN_VERSION} && \
   docker run -it --rm \
     -v ${PWD}:/src \
     emscripten/emsdk:${EMSCRIPTEN_VERSION} \
