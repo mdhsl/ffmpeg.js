@@ -1,2 +1,6 @@
 .idea
 ./build/FFmpeg
+/build/FFmpeg/ffmpeg.bc
+/build/FFmpeg/ffmpeg_g.wasm
+/dist/ffmpeg-h264.js
+/build/FFmpeg/
