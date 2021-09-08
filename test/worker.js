@@ -1,6 +1,6 @@
 const load = () => {
     self.importScripts('../dist/ffmpeg-h264.js');
-    self.Module()
+    self.OSH()
         .then((_Module) => {
             Module = _Module;
 
@@ -77,7 +77,6 @@ const load = () => {
                 var frameYDataPtr = Module.getValue(decoded_frame, '*');
                 var frameUDataPtr = Module.getValue(decoded_frame + 4, '*');
                 var frameVDataPtr = Module.getValue(decoded_frame + 8, '*');
-
 
                 return {
                     frame_width: frame_width,

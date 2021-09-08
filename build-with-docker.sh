@@ -5,7 +5,7 @@
 # Before running this script, you need to install docker first.
 #
 
-#LAST: 2.0.26
+#LAST: 2.0.29
 EMSCRIPTEN_VERSION=latest
 TARGET=${1:-build}
 
