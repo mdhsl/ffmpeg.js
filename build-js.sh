@@ -2,11 +2,11 @@
 
 ROOT_DIR=$PWD
 #HASH=9f8c81ef
-HASH=n4.4
+HASH=n6.0
 ##
 configure_ffmpeg() {
-  rm -fr build/FFmpeg
-  git clone --recursive https://github.com/FFmpeg/FFmpeg.git build/FFmpeg
+#  rm -fr build/FFmpeg
+#  git clone --recursive https://github.com/FFmpeg/FFmpeg.git build/FFmpeg
   cd build/FFmpeg
   git checkout $HASH
   echo "Preparing configure for "$HASH
@@ -23,11 +23,11 @@ configure_ffmpeg() {
     --disable-runtime-cpudetect \
     --disable-asm \
     --disable-fast-unaligned \
-    --disable-pthreads \
-    --disable-w32threads \
     --disable-os2threads \
     --disable-debug \
     --disable-stripping \
+    --disable-pthreads \
+    --disable-w32threads \
     \
     --disable-all \
     --enable-ffmpeg \
@@ -61,7 +61,8 @@ configure_ffmpeg() {
     --disable-lzma \
     --disable-securetransport \
     --disable-xlib \
-    --disable-zlib
+    --disable-zlib \
+    --enable-hardcoded-tables
 }
 
 make_ffmpeg() {
@@ -89,18 +90,28 @@ build_ffmpegjs() {
     --llvm-lto 3 \
     -g0 \
     --closure 1 \
-    -s SINGLE_FILE=1 \
+    -s SINGLE_FILE=0 \
+    -s FILESYSTEM=0 \
     -s NO_EXIT_RUNTIME=1 \
     -s 'EXPORT_NAME="OSH"' \
-    -s EXPORTED_FUNCTIONS='["_av_get_default_channel_layout","_avcodec_register_all","_avcodec_find_decoder_by_name","_avcodec_alloc_context3","_avcodec_open2", "_av_init_packet", "_av_frame_alloc", "_av_packet_from_data", "_avcodec_decode_video2", "_avcodec_flush_buffers","_avcodec_decode_audio4"]' \
-    -s EXPORTED_RUNTIME_METHODS='["FS", "ccall", "getValue", "setValue", "writeArrayToMemory"]' \
-    -s TOTAL_MEMORY=134217728
+    -s EXPORTED_FUNCTIONS='["_avcodec_send_packet","_avcodec_receive_frame","_av_get_default_channel_layout", "_av_init_packet", "_av_frame_alloc", "_av_packet_from_data","_avcodec_find_decoder_by_name","_avcodec_alloc_context3","_avcodec_open2", "_avcodec_flush_buffers", "_malloc"]' \
+    -s EXPORTED_RUNTIME_METHODS='["ccall", "getValue", "setValue", "writeArrayToMemory"]' \
+    -s ALLOW_MEMORY_GROWTH=1 \
+    -s STACK_OVERFLOW_CHECK=2 \
+    -s PTHREAD_POOL_SIZE_STRICT=2 \
+    -s EXPORT_ES6=1 \
+    -s USE_ES6_IMPORT_META=1
 }
 
+copy_ffmpegjs() {
+   cd $ROOT_DIR
+   cp dist/ffmpeg-h264.* test/lib
+}
 main() {
   configure_ffmpeg
   make_ffmpeg
   build_ffmpegjs
+  copy_ffmpegjs
 }
 
 main "$@"

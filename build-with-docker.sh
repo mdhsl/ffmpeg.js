@@ -6,7 +6,8 @@
 #
 
 #LAST: 2.0.29
-EMSCRIPTEN_VERSION=latest
+#EMSCRIPTEN_VERSION=latest
+EMSCRIPTEN_VERSION=3.1.41
 TARGET=${1:-build}
 
 check_command() {

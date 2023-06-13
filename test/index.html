@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="test/YUVCanvas.js"></script>
+    <script src="YUVCanvas.js"></script>
 </head>
 <body>
 <script>
@@ -24,7 +24,7 @@
         ws.binaryType = 'arraybuffer';
 
         // on receiving data. The buffer has to be a COMPLETE NAL UNIT, otherwise the buffer could not be decoded
-        let worker = new Worker('./test/worker.js');
+        let worker = new Worker('./worker.js');
         ws.onmessage = function (event) {
             var timeStamp = new DataView(event.data).getFloat64(0, false); // read double time stamp as big endian
             var dataSize = new DataView(event.data).getInt32(8, false);
@@ -69,7 +69,7 @@
 </script>
 
 Video Source: <select id="url" size="1">
-    <option value="ws://localhost:8082/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:android:device:9d31c07640c760a7-sos&observedProperty=http://sensorml.com/ont/swe/property/VideoFrame&temporalFilter=phenomenonTime,2021-09-07T21:38:59.163Z/2021-09-07T21:39:49.579Z&replaySpeed=1">
+    <option value="wss://sensiasoft.net/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=urn:mysos:solo:video2&observedProperty=http://sensorml.com/ont/swe/property/VideoFrame&temporalFilter=phenomenonTime,2015-12-19T21:04:40.000Z/2015-12-19T21:06:45.000Z&replaySpeed=1">
         Replay
     </option>
     <option value="ws://localhost:8282/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=foscam&observedProperty=http://sensorml.com/ont/swe/property/VideoFrame&temporalFilter=phenomenonTime,now/2055-08-11T20:18:05.451Z">

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="YUVCanvas.js"></script>
+    <script type="module" src="app.js"></script>
+</head>
+<body>
+Video Source: <select id="url" size="1">
+    <option value="wss://sensiasoft.net/sensorhub/sos?video_fps=30&video_bitrate=6000&video_width=1920&video_height=1080&video_scale=4&service=SOS&version=2.0&request=GetResult&offering=urn:mysos:solo:video2&observedProperty=http://sensorml.com/ont/swe/property/VideoFrame&temporalFilter=phenomenonTime,2015-12-19T21:04:40.000Z/2015-12-19T21:06:45.000Z&replaySpeed=1">
+        Replay
+    </option>
+    <option value="ws://localhost:8282/sensorhub/sos?service=SOS&version=2.0&request=GetResult&offering=foscam&observedProperty=http://sensorml.com/ont/swe/property/VideoFrame&temporalFilter=phenomenonTime,now/2055-08-11T20:18:05.451Z">
+        Foscam
+    </option>
+</select>
+<button type="button" id='add'>Play</button>
+<div id="pktSize">Packet Size:</div>
+<div id="timeStamp">TimeStamp:</div>
+<div id="container">
+
+</div>
+</body>
+</html>
