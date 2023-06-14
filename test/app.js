@@ -4,9 +4,9 @@ button.onclick = () => addNewVideo();
 function addNewVideo() {
     const container = document.getElementById("container");
     const canvas = document.createElement('canvas');
-    canvas.setAttribute("width","1280");
-    canvas.setAttribute("height","720");
-    canvas.setAttribute("style","width:25%;height:calc(25%-0px);");
+    canvas.setAttribute("width","1920");
+    canvas.setAttribute("height","780");
+    canvas.setAttribute("style","width:50%;height:auto");
 
     document.body.appendChild(container);
     container.appendChild(canvas);

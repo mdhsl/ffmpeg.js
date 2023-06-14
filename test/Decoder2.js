@@ -10,7 +10,7 @@ class Decoder {
             this.Module = await OSH();
 
             // find h264 decoder
-            const codec = this.Module.ccall('avcodec_find_decoder_by_name', 'number', ['string'], ["h264"]);
+            const codec = this.Module.ccall('avcodec_find_decoder_by_name', 'number', ['string'], ["vp9"]);
             if (codec === 0) {
                 console.error("Could not find H264 codec");
             }
